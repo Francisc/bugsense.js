@@ -1201,6 +1201,8 @@ var bugsense;
     } else {
         // Browser globals
         root.Bugsense = factory();
+        // use the initializer defined in root
+        if ( root.bugsenseInit ) { root.bugsenseInit(); }
     }
 }( this, function () {
   /**
