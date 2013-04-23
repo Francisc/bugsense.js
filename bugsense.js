@@ -1,12 +1,12 @@
 var bugsense;
 
 (function ( root, factory ) {
-    // Browser globals
+    // Browser globals, coexist with existing requirejs-loaded apps
     root.Bugsense = factory( root );
 
     if ( typeof define === 'function' && define.amd ) {
       // AMD. Register as an anonymous module.
-      define( 'Bugsense', root.Bugsense );
+      define( root.Bugsense );
     }
 }( this, function factory ( root ) {
 
