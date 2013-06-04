@@ -44,7 +44,7 @@ var bugsense;
       }
       return result;
     }
-}( this, function () { 
+}( this, function () {
 
   /**
    * Simple extend() implementation
@@ -124,7 +124,6 @@ var bugsense;
       S4() + S4() + S4()
     );
   };
-
 
   /**
    * Constructor for the Bugsense instance
@@ -241,6 +240,7 @@ var bugsense;
       return false;
     }
 
+<<<<<<< HEAD
     // some console.log implementations don't support multiple parameters, guess it's okay in this case to concatenate
     if ( 'console' in window ) {
       console.log( 'logged 1 error to Bugsense, status: ' + request.target.responseText );
@@ -298,6 +298,64 @@ var bugsense;
         }
       }
     }
+=======
+      // some console.log implementations don't support multiple parameters, guess it's okay in this case to concatenate
+      if ('console' in window) {
+          console.log('logged 1 error to Bugsense, status: ' + request.target.responseText);
+      }
+      if (bugsense.config.winjs) {
+          if (request.target.responseText !== undefined && request.target.responseText.indexOf('url') > 0) {
+              var response = JSON.parse(request.target.responseText);
+              // Display fix notification if set
+
+                  var md = new Windows.UI.Popups.MessageDialog(response.data.tickerText);
+                  var result, resultOptions = ['Update', 'Cancel'];
+                  var cmd;
+
+                  for (var i = 0; i < resultOptions.length; i++) {
+                      cmd = new Windows.UI.Popups.UICommand();
+                      cmd.label = resultOptions[i];
+                      // Style update
+                      cmd.invoked = function (c) {
+                          result = c.label;
+                      }
+                      md.commands.append(cmd);
+                  }
+
+                  md.showAsync().then(function (c) {
+                      if (c.label == 'Update') {
+                          var uri = Windows.Foundation.Uri(response.data.url);
+                          Windows.System.Launcher.launchUriAsync(uri);
+                      }
+                      return c.label;
+                  }).done(function complete() { window.bugsense._die(); });
+              // Show popup message is set
+
+          } else if (request.target.responseText.length > 0 && request.target.responseText.indexOf('url') < 0) { // NOT OPTIONS
+              if (window.bugsense.config.message !== null) {
+                  var md = new Windows.UI.Popups.MessageDialog(window.bugsense.config.message);
+                  var result, resultOptions = ['OK'];
+                  var cmd;
+
+                  for (var i = 0; i < resultOptions.length; i++) {
+                      cmd = new Windows.UI.Popups.UICommand();
+                      cmd.label = resultOptions[i];
+                      cmd.invoked = function (c) {
+                          result = c.label;
+                      }
+                      md.commands.append(cmd);
+                  }
+
+                  md.showAsync().then(function (c) {
+                      return c.label;
+                  }).done(function complete() { window.bugsense._die(); });
+              } else {
+                  // Just die!
+                  window.bugsense._die();
+              }
+          }
+      }
+>>>>>>> Changes Webkit parsedError because of error.stack undefined exception
 
   };
 
@@ -349,6 +407,7 @@ var bugsense;
       };
     // Webkit
     } else {
+<<<<<<< HEAD
       var where_parts = error.stack.split( '\n' ).slice( 1 )[ 0 ].match( /\s+at\s.*(\/.*\..*|<anonymous>:\d*:\d*)/ );
       // If .stack is not available
       try {
@@ -364,6 +423,21 @@ var bugsense;
         stack: error.stack,
         type: error.name
       };
+=======
+        // If .stack is not available
+        try {
+            var where_parts = error.stack.split( '\n' ).slice(1)[0].match( /\s+at\s.*(\/.*\..*|<anonymous>:\d*:\d*)/ );
+        } catch ( error ) {
+            error.stack = error.message;
+        }
+        parsedError = {
+          message: [ error.name, error.message ].join( ': ' ),
+          url: where_parts[ 1 ].split( ':' )[ 0 ].replace("/",""),
+          line: where_parts[ 1 ].split( ':' )[ 1 ],
+          stack: error.stack,
+          type: error.name
+        };
+>>>>>>> Changes Webkit parsedError because of error.stack undefined exception
     }
 
     if ( parsedError.stack === null || ( typeof parsedError.stack === 'string' && parsedError.stack.length === 0 ) ) {
