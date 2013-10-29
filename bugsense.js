@@ -215,8 +215,8 @@ var bugsense;
     * Clear breadcrumbs
     */
   Bugsense.prototype.clearBreadcrumbs = function bugsenseClearBreadcrumbs () {
-    this.breadcrumbs = {};
-  };
+     this.breadcrumbs = []
+  }
 
   /**
     * Kill bugsense and the app. Force exit
@@ -238,122 +238,62 @@ var bugsense;
       return false;
     }
 
-<<<<<<< HEAD
     // some console.log implementations don't support multiple parameters, guess it's okay in this case to concatenate
-    if ( 'console' in window ) {
-      console.log( 'logged 1 error to Bugsense, status: ' + request.target.responseText );
+    if ('console' in window) {
+      console.log('logged 1 error to Bugsense, status: ' + request.target.responseText);
     }
-    if ( bugsense.config.winjs ) {
-      var md, result, resultOptions, cmd;
-
-      if ( request.target.responseText !== undefined && request.target.responseText.indexOf( 'url' ) > 0 ) {
-        var response = JSON.parse( request.target.responseText );
+    if (bugsense.config.winjs) {
+      if (request.target.responseText !== undefined && request.target.responseText.indexOf('url') > 0) {
+        var response = JSON.parse(request.target.responseText);
         // Display fix notification if set
 
-        md = new Windows.UI.Popups.MessageDialog( response.data.tickerText );
-        resultOptions = [ 'Update', 'Cancel' ];
+        var md = new Windows.UI.Popups.MessageDialog(response.data.tickerText);
+        var result, resultOptions = ['Update', 'Cancel'];
+        var cmd;
 
-        for ( i = 0; i < resultOptions.length; i++ ) {
+        for (var i = 0; i < resultOptions.length; i++) {
           cmd = new Windows.UI.Popups.UICommand();
-          cmd.label = resultOptions[ i ];
+          cmd.label = resultOptions[i];
           // Style update
-          cmd.invoked = function ( c ) {
-              result = c.label;
-          };
-          md.commands.append( cmd );
+          cmd.invoked = function (c) {
+            result = c.label;
+          }
+          md.commands.append(cmd);
         }
 
-        md.showAsync().then( function ( c ) {
-          if ( c.label == 'Update' ) {
-            var uri = Windows.Foundation.Uri( response.data.url );
-            Windows.System.Launcher.launchUriAsync( uri );
+        md.showAsync().then(function (c) {
+          if (c.label == 'Update') {
+            var uri = Windows.Foundation.Uri(response.data.url);
+            Windows.System.Launcher.launchUriAsync(uri);
           }
           return c.label;
-        }).done( function complete () { root.Bugsense._die(); } );
-
+        }).done(function complete() { window.bugsense._die(); });
         // Show popup message is set
-      } else if ( request.target.responseText.length > 0 && request.target.responseText.indexOf( 'url' ) < 0 ) {
-        // NOT OPTIONS
-        if ( root.Bugsense.config.message !== null ) {
-          md = new Windows.UI.Popups.MessageDialog( root.Bugsense.config.message );
-          resultOptions = [ 'OK' ];
 
-          for ( i = 0; i < resultOptions.length; i++ ) {
+      } else if (request.target.responseText.length > 0 && request.target.responseText.indexOf('url') < 0) { // NOT OPTIONS
+        if (window.bugsense.config.message !== null) {
+          var md = new Windows.UI.Popups.MessageDialog(window.bugsense.config.message);
+          var result, resultOptions = ['OK'];
+          var cmd;
+
+          for (var i = 0; i < resultOptions.length; i++) {
             cmd = new Windows.UI.Popups.UICommand();
-            cmd.label = resultOptions[ i ];
-            cmd.invoked = function ( c ) {
-                result = c.label;
-            };
-            md.commands.append( cmd );
+            cmd.label = resultOptions[i];
+            cmd.invoked = function (c) {
+              result = c.label;
+            }
+            md.commands.append(cmd);
           }
 
-          md.showAsync().then( function ( c ) {
+          md.showAsync().then(function (c) {
             return c.label;
-          }).done( function complete() { root.Bugsense._die(); } );
+          }).done(function complete() { window.bugsense._die(); });
         } else {
           // Just die!
-          root.Bugsense._die();
+          window.bugsense._die();
         }
       }
     }
-=======
-      // some console.log implementations don't support multiple parameters, guess it's okay in this case to concatenate
-      if ('console' in window) {
-          console.log('logged 1 error to Bugsense, status: ' + request.target.responseText);
-      }
-      if (bugsense.config.winjs) {
-          if (request.target.responseText !== undefined && request.target.responseText.indexOf('url') > 0) {
-              var response = JSON.parse(request.target.responseText);
-              // Display fix notification if set
-
-                  var md = new Windows.UI.Popups.MessageDialog(response.data.tickerText);
-                  var result, resultOptions = ['Update', 'Cancel'];
-                  var cmd;
-
-                  for (var i = 0; i < resultOptions.length; i++) {
-                      cmd = new Windows.UI.Popups.UICommand();
-                      cmd.label = resultOptions[i];
-                      // Style update
-                      cmd.invoked = function (c) {
-                          result = c.label;
-                      }
-                      md.commands.append(cmd);
-                  }
-
-                  md.showAsync().then(function (c) {
-                      if (c.label == 'Update') {
-                          var uri = Windows.Foundation.Uri(response.data.url);
-                          Windows.System.Launcher.launchUriAsync(uri);
-                      }
-                      return c.label;
-                  }).done(function complete() { window.bugsense._die(); });
-              // Show popup message is set
-
-          } else if (request.target.responseText.length > 0 && request.target.responseText.indexOf('url') < 0) { // NOT OPTIONS
-              if (window.bugsense.config.message !== null) {
-                  var md = new Windows.UI.Popups.MessageDialog(window.bugsense.config.message);
-                  var result, resultOptions = ['OK'];
-                  var cmd;
-
-                  for (var i = 0; i < resultOptions.length; i++) {
-                      cmd = new Windows.UI.Popups.UICommand();
-                      cmd.label = resultOptions[i];
-                      cmd.invoked = function (c) {
-                          result = c.label;
-                      }
-                      md.commands.append(cmd);
-                  }
-
-                  md.showAsync().then(function (c) {
-                      return c.label;
-                  }).done(function complete() { window.bugsense._die(); });
-              } else {
-                  // Just die!
-                  window.bugsense._die();
-              }
-          }
-      }
->>>>>>> Changes Webkit parsedError because of error.stack undefined exception
 
   };
 
