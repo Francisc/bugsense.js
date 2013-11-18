@@ -345,37 +345,19 @@ var bugsense;
       };
     // Webkit
     } else {
-<<<<<<< HEAD
-      var where_parts = error.stack.split( '\n' ).slice( 1 )[ 0 ].match( /\s+at\s.*(\/.*\..*|<anonymous>:\d*:\d*)/ );
       // If .stack is not available
       try {
-        tmp = error.stack;
-      } catch ( exception ) {
-        exception.stack = exception.message;
+        var where_parts = error.stack.split( '\n' ).slice(1)[0].match( /\s+at\s.*(\/.*\..*|<anonymous>:\d*:\d*)/ );
+      } catch ( error ) {
+        error.stack = error.message;
       }
-
       parsedError = {
         message: [ error.name, error.message ].join( ': ' ),
-        url: where_parts[ 1 ].split( ':' )[ 0 ].replace( '/', '' ),
-        line: where_parts[ 1 ].split( ':' )[ 1 ],
+        url: where_parts ? where_parts[ 1 ].split( ':' )[ 0 ].replace("/","") : '',
+        line: where_parts ? where_parts[ 1 ].split( ':' )[ 1 ] : '',
         stack: error.stack,
         type: error.name
       };
-=======
-        // If .stack is not available
-        try {
-            var where_parts = error.stack.split( '\n' ).slice(1)[0].match( /\s+at\s.*(\/.*\..*|<anonymous>:\d*:\d*)/ );
-        } catch ( error ) {
-            error.stack = error.message;
-        }
-        parsedError = {
-          message: [ error.name, error.message ].join( ': ' ),
-          url: where_parts ? where_parts[ 1 ].split( ':' )[ 0 ].replace("/","") : '',
-          line: where_parts ? where_parts[ 1 ].split( ':' )[ 1 ] : '',
-          stack: error.stack,
-          type: error.name
-        };
->>>>>>> Changes Webkit parsedError because of error.stack undefined exception
     }
 
     if ( parsedError.stack === null || ( typeof parsedError.stack === 'string' && parsedError.stack.length === 0 ) ) {
@@ -500,9 +482,21 @@ var bugsense;
    * @param  {String} line        The line number
    * @param  {Object} custom_data Custom data to send over to Bugsense
    */
+<<<<<<< HEAD
   Bugsense.prototype.notify = function bugsenseNotify ( exception, url, line, custom_data ) {
     var stack;
 
+=======
+  Bugsense.prototype.notify = function bugsenseNotify(exception, url, line, column, custom_data) {
+    var stack;
+    // Prints exception stack to console before the exception is handled by Bugsense
+    if (typeof(column) === 'object') {
+      custom_data = column;
+    }
+    if (window.console && window.console.error) {
+      console.error(exception, url+':'+line);
+    }
+>>>>>>> Solves Chrome bug with column line
     // Handle cases where only Error object and custom data are sent - url will be the custom_data
     if ( arguments.length === 2 && this.testException( exception ) ) {
       custom_data = url;
@@ -578,6 +572,7 @@ var bugsense;
     * Closure function for unhandled exceptions
     *
     */
+<<<<<<< HEAD
   Bugsense.prototype.onerror = function bugsenseonerror ( exception, url, line, custom_data ) {
     // Ignore bugsense raised exception
     if ( root.Bugsense.isBugsenseException( exception ) ) {
@@ -585,6 +580,13 @@ var bugsense;
     }
 
     return root.Bugsense.notify.apply( root.Bugsense, [ exception, url, line, custom_data ] );
+=======
+  Bugsense.prototype.onerror = function bugsenseonerror(exception, url, line, column, custom_data) {
+      // Ignore bugsense raised exception
+      if (window.bugsense.isBugsenseException(exception))
+          return false;
+      return window.bugsense.notify(exception, url, line, column, custom_data);
+>>>>>>> Solves Chrome bug with column line
   };
 
   Bugsense.prototype.onpromiseerror = function bugsenseonpromiseerror ( event ) {
