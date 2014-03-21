@@ -6,35 +6,12 @@
 
 Store the bugsense.js file along with you other Javascript files. Alternatively you can use the BugSense hosted version (see the following snippet). Then, instanciate the plugin with the API key from your project:
 
-``` html
-  <!-- start Bugsense -->
-  <script>
-    !(function ( document, window ) {
-      var script = document.createElement( 'script' ),
-          bugsense;
-          script.type = 'text/javascript'
-          script.async = true;
-          script.src = 'http://www.bugsense.com/static/js/global/bugsense.js';
-          document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );
-
-          // Initialize the tracker when the script loads
-          script.onreadystatechange = script.onload = function bugsenseInit () {
-            // Init the Bugsense client
-            bugsense = new Bugsense( {
-              apiKey: 'YOUR_API_KEY',
-              appName: 'YOUR_APP_NAME',
-              appVersion: 'APP_VERSION'
-            } );
-            // Setup error handler
-            window.onerror = function ( exception, url, line ) {
-              bugsense.notify.apply( bugsense, [ exception, url, line ] );
-              return true;
-            };
-          }
-
-    }(document, window));
-  </script>
-  <!-- end Bugsense -->
+```html
+ <script src="http://www.bugsense.com/static/js/global/bugsense.js" type='text/javascript'></script>
+ <script type="text/javascript">
+    // You will find the API KEY in your BugSense Dashboard
+    var bugsense = new Bugsense( { apiKey: 'YOUR_API_KEY' } );
+ </script>
 ```
 
 
